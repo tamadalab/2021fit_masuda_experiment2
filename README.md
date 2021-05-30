@@ -45,8 +45,12 @@ diff main.c dest3.c               # <- 同じファイルになるため，何�
 ### 入出力例
 
 ```sh
-mkdir dest_dir                   # <- dest_dir ディレクトリを作成する．
-./copy main.c README.md dest_dir # <- main.c, README.md を dest_dir にコピーする．
+mkdir dest_dir                      # <- dest_dir ディレクトリを作成する．
+./copy main.c README.md dest_dir    # <- main.c, README.md を dest_dir にコピーする．
 ls dest_dir
 README.md      main.c
+./copy main.c README.md missing_dir # <- missing_dirが存在しないので，失敗する．
+missing_dir: directory not found.
+./copy main.c README.md copy        # <- 最後のファイル（copy）がディレクトリではないので失敗する．
+copy: not directory.
 ```

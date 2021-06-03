@@ -20,6 +20,15 @@
 diff main.c copied.c   # <- 同じファイルになるため，何も出力しない．
 ```
 
+### 修正方針
+
+次の修正を行ってください．
+
+* 14行目にファイルを読み込み専用で開く処理（`fopen`）を追加しましょう．
+* 19行目にファイルを書き込み専用で開く処理（`fopen`）を追加しましょう．
+* 10行目の`copy_impl`関数の中身を書きましょう．
+     * `from`から1文字読み（`fgetc`），`to`に書き込み（`fputc`）ましょう．
+
 
 ## ステップ2
 
@@ -36,6 +45,15 @@ diff main.c dest2.c               # <- 同じファイルになるため，何�
 cat main.c | ./copy - - > dest3.c # copy main.c dest3.c と同様．
 diff main.c dest3.c               # <- 同じファイルになるため，何も出力しない．
 ```
+
+### 修正方針
+
+次の修正を行ってください．
+
+* `fopen`を`open_impl`関数に置き換えましょう．
+    * `open_impl`関数はファイル名（`file_name`），モード（`mode`），`FILE`型のデフォルトのファイルポインタ（`defaultFP`）を受け取ります．
+    * もし，`file_name`が`"-"`と一致すれば，`defaultFP`を返しましょう．
+    * そうでなければ，`fopen`でファイルを開きましょう．
 
 ## ステップ3
 
@@ -54,3 +72,18 @@ missing_dir: directory not found.
 ./copy main.c README.md copy        # <- 最後のファイル（copy）がディレクトリではないので失敗する．
 copy: not directory.
 ```
+
+### 修正方針
+
+次の修正を行ってください．
+
+* `perform`メソッドの`if`文の後ろに`argc > 3`の条件を追加しましょう．
+    * その条件が合致する場合は，`copyN(argc, argv)`を呼び出しましょう．
+* `int copyN(int argc, char *argv[])` 関数を作成しましょう．
+    * `argv`の`1`から`argc - 1`までの間，各`argv[i]`について，以下の処理を行いましょう．
+        * `sprintf`関数を使い，出力先のファイルパスを作成しましょう．
+            * `sprintf(dest, "%s/%s", argv[argc - 1], argv[i])`
+            * `dest`は`char`型の配列で，長さは`256`程度で良いでしょう．
+        * `copy(argv[i], dest)`関数を呼び出しましょう．
+            * `copy`関数の返り値が`0`でなければ`perror(argv[i])`でエラーを表示し，`copyN`関数からreturnしましょう．
+    * 最後の，正常終了を表すステータスコード `0` をreturnしましょう．
